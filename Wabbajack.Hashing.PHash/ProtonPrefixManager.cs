@@ -59,11 +59,20 @@ namespace Wabbajack.Hashing.PHash
 
             _logger.LogDebug("Using Proton wrapper at {ProtonPath}", protonWrapperPath);
 
+            var isProton = protonWrapperPath.EndsWith("proton", StringComparison.OrdinalIgnoreCase);
+            var arguments = new List<object>
+            {
+                "wineboot",
+                "--init",
+            };
+            if (isProton)
+                arguments.Insert(0, "run");
+            
             // Initialize the Proton prefix with wineboot
             var ph = new ProcessHelper
             {
                 Path = protonWrapperPath.ToAbsolutePath(),
-                Arguments = new object[] { "run", "wineboot", "--init" },
+                Arguments = arguments,
                 EnvironmentVariables = new Dictionary<string, string>
                 {
                     ["WINEPREFIX"] = _currentPrefix.ToString(),
@@ -91,10 +100,18 @@ namespace Wabbajack.Hashing.PHash
                 throw new InvalidOperationException("No Proton installation found. Please ensure Steam is installed with Proton (Experimental, 10.0, or 9.0)");
             }
             
+            var isProton = protonWrapperPath.EndsWith("proton", StringComparison.OrdinalIgnoreCase);
+            var arguments = new List<object>
+            {
+                "Tools\\texconv.exe"
+            };
+            if (isProton)
+                arguments.Insert(0, "run");
+            
             return new ProcessHelper
             {
                 Path = protonWrapperPath.ToAbsolutePath(),
-                Arguments = new object[] { "run", "Tools\\texconv.exe" }.Concat(texConvArgs),
+                Arguments = arguments.Concat(texConvArgs),
                 EnvironmentVariables = new Dictionary<string, string>
                 {
                     ["WINEPREFIX"] = prefix.ToString(),
@@ -120,10 +137,18 @@ namespace Wabbajack.Hashing.PHash
                 throw new InvalidOperationException("No Proton installation found. Please ensure Steam is installed with Proton (Experimental, 10.0, or 9.0)");
             }
             
+            var isProton = protonWrapperPath.EndsWith("proton", StringComparison.OrdinalIgnoreCase);
+            var arguments = new List<object>
+            {
+                "Tools\\texdiag.exe"
+            };
+            if (isProton)
+                arguments.Insert(0, "run");
+            
             return new ProcessHelper
             {
                 Path = protonWrapperPath.ToAbsolutePath(),
-                Arguments = new object[] { "run", "Tools\\texdiag.exe" }.Concat(texDiagArgs),
+                Arguments = arguments.Concat(texDiagArgs),
                 EnvironmentVariables = new Dictionary<string, string>
                 {
                     ["WINEPREFIX"] = prefix.ToString(),
@@ -149,10 +174,18 @@ namespace Wabbajack.Hashing.PHash
                 throw new InvalidOperationException("No Proton installation found. Please ensure Steam is installed with Proton (Experimental, 10.0, or 9.0)");
             }
             
+            var isProton = protonWrapperPath.EndsWith("proton", StringComparison.OrdinalIgnoreCase);
+            var arguments = new List<object>
+            {
+                "Extractors\\windows-x64\\7z.exe",
+            };
+            if (isProton)
+                arguments.Insert(0, "run");
+            
             return new ProcessHelper
             {
                 Path = protonWrapperPath.ToAbsolutePath(),
-                Arguments = new object[] { "run", "Extractors\\windows-x64\\7z.exe" }.Concat(sevenZipArgs),
+                Arguments = arguments.Concat(sevenZipArgs),
                 EnvironmentVariables = new Dictionary<string, string>
                 {
                     ["WINEPREFIX"] = prefix.ToString(),

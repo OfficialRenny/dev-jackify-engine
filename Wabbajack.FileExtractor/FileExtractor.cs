@@ -608,17 +608,24 @@ public class FileExtractor
             _logger.LogError("No Proton installation found, cannot run 7z.exe via Proton");
             return -1;
         }
+        // Check if we are indeed using proton, or if we have fallen back to wine
+        var isProton = protonPath.EndsWith("proton", StringComparison.OrdinalIgnoreCase);
         
         var winePrefixPath = Path.Combine(Path.GetTempPath(), "jackify-proton-extraction");
         Directory.CreateDirectory(winePrefixPath);
         
         // Use absolute path to 7z.exe to avoid path resolution issues
         var sevenZipPath = "Extractors/windows-x64/7z.exe".ToRelativePath().RelativeTo(KnownFolders.EntryPoint).ToString();
+
+        // proton executable needs `run` to run an .exe, wine does not
+        var arguments = $"\"{sevenZipPath}\" x -sccUTF-8 -o\"{outputPath}\" \"{archivePath}\"";
+        if (isProton)
+            arguments = "run " + arguments;
         
         var processInfo = new ProcessStartInfo
         {
             FileName = protonPath,
-            Arguments = $"run \"{sevenZipPath}\" x -sccUTF-8 -o\"{outputPath}\" \"{archivePath}\"",
+            Arguments = arguments,
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
